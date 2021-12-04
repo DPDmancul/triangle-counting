@@ -1,4 +1,4 @@
-use crate::utils::{hash_table, next_sample, rand_without, Edge};
+use crate::utils::{hash_table, next_sample, rand_without, Edge, Sample};
 use rand::{thread_rng, Rng};
 use std::{cell::Cell, rc::Rc};
 
@@ -25,7 +25,7 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
 
             missing_edges.insert(Edge::new(a, v), Rc::clone(&count));
             missing_edges.insert(Edge::new(b, v), Rc::clone(&count));
-            samples.push(count);
+            samples.push(Sample { a, b, v, count });
             next = next_sample(1. / f64::from(m), n_edges);
         }
 
@@ -33,7 +33,14 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
             m_big *= 2;
             m *= 2;
             // retain probability is 0.5
-            samples.retain(|_| rng.gen());
+            samples.retain(|&Sample { a, b, v, .. }| {
+                let keep: bool = rng.gen();
+                if !keep {
+                    missing_edges.remove(&Edge::new(a, v));
+                    missing_edges.remove(&Edge::new(b, v));
+                }
+                keep
+            });
         }
 
         if let Some(count) = missing_edges.get(&e) {
@@ -43,8 +50,9 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
 
     print!("\x1b[2K");
 
-    let beta = samples
-        .iter()
-        .fold(0, |acc, count| if count.get() == 2 { acc + 1 } else { acc });
+    let beta = samples.iter().fold(
+        0,
+        |acc, Sample { count, .. }| if count.get() == 2 { acc + 1 } else { acc },
+    );
     f64::from(beta) / samples.len() as f64 * f64::from(n_nodes) * f64::from(n_edges)
 }
