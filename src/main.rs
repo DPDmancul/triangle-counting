@@ -15,5 +15,5 @@ fn main() {
         (a.trim().parse().unwrap(), b.trim().parse().unwrap())
     });
 
-    println!("{}", arb_ord(100000, n, edges));
+    println!("{}", arb_ord(1000000, n, edges));
 }

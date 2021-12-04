@@ -111,6 +111,6 @@ impl BuildHasher for RandomState {
 }
 
 /// Creates a new HashMap with the custom hash function.
-pub fn hash_table<K, V>(r: u32) -> HashMap<K, V /*, RandomState*/> {
-    HashMap::with_capacity(2 * r as usize) //_and_hasher(2 * r as usize, RandomState::new(r))
+pub fn hash_table<K, V>(r: u32) -> HashMap<K, V, RandomState> {
+    HashMap::with_capacity_and_hasher(2 * r as usize, RandomState::new(r))
 }

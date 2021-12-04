@@ -15,6 +15,8 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
 
     for (a, b) in edges {
         n_edges += 1;
+        print!("{}\r", n_edges);
+
         let e = Edge::new(a, b);
 
         if n_edges == next {
@@ -28,21 +30,18 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
         }
 
         if n_edges == m_big {
-            print!("{} {} {} ", m_big, m, samples.len());
             m_big *= 2;
             m *= 2;
             // retain probability is 0.5
             samples.retain(|_| rng.gen());
-            println!("{}", samples.len());
         }
 
         if let Some(count) = missing_edges.get(&e) {
-            println!("{}, {}", a, b);
             count.set(count.get() + 1);
         }
     }
 
-    //println!("{:?}", samples);
+    print!("\x1b[2K");
 
     let beta = samples
         .iter()
