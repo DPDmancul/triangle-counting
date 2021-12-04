@@ -19,6 +19,8 @@ impl Edge {
     }
 }
 
+/// Represents a sample Edge(a, b)
+/// with missing edges Edge(a, v) and Edge(b, v)
 pub struct Sample {
     pub a: u32,
     pub b: u32,
