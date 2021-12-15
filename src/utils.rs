@@ -1,13 +1,11 @@
 use rand::{thread_rng, Rng};
 use std::collections::HashMap;
 use std::hash::{BuildHasher, Hasher};
-use std::{cell::Cell, rc::Rc};
 
 /// Represents an edge of the graph.
 /// The extreme nodes are stored in order by their values.
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
-#[non_exhaustive]
-pub struct Edge(pub u32, pub u32);
+pub struct Edge(u32, u32);
 
 impl Edge {
     pub fn new(a: u32, b: u32) -> Self {
@@ -17,15 +15,6 @@ impl Edge {
             Self(b, a)
         }
     }
-}
-
-/// Represents a sample Edge(a, b)
-/// with missing edges Edge(a, v) and Edge(b, v)
-pub struct Sample {
-    pub a: u32,
-    pub b: u32,
-    pub v: u32,
-    pub count: Rc<Cell<u32>>,
 }
 
 /// Compute random `v ∈ {0, 1, ..., n-1}\{a, b}`

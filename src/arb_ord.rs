@@ -1,6 +1,15 @@
-use crate::utils::{hash_table, next_sample, rand_without, Edge, Sample};
+use crate::utils::{hash_table, next_sample, rand_without, Edge};
 use rand::{thread_rng, Rng};
 use std::{cell::Cell, rc::Rc};
+
+/// Represents a sample Edge(a, b)
+/// with missing edges Edge(a, v) and Edge(b, v)
+struct Sample {
+    a: u32,
+    b: u32,
+    v: u32,
+    count: Rc<Cell<u32>>,
+}
 
 pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -> f64 {
     let mut next = 1; // Next sample
@@ -15,7 +24,7 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
 
     for (a, b) in edges {
         n_edges += 1;
-        print!("{}\r", n_edges);
+        // print!("{}\r", n_edges);
 
         let e = Edge::new(a, b);
 
@@ -26,7 +35,7 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
             missing_edges.insert(Edge::new(a, v), Rc::clone(&count));
             missing_edges.insert(Edge::new(b, v), Rc::clone(&count));
             samples.push(Sample { a, b, v, count });
-            next = next_sample(1. / f64::from(m), n_edges);
+            next = next_sample(1. / f64::from(m), samples.len() as u32);
         }
 
         if n_edges == m_big {
@@ -48,7 +57,7 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
         }
     }
 
-    print!("\x1b[2K");
+    // print!("\x1b[2K");
 
     let beta = samples.iter().fold(
         0,
