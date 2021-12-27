@@ -21,8 +21,7 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
     let mut rng = thread_rng(); // Random generator
 
     for (a, b) in edges {
-        // TODO if ???
-        while n_paths < next {
+        if n_paths < next {
             if Some(a) != u {
                 adjacent.clear();
                 u = Some(a);
@@ -36,6 +35,7 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             }
 
             n_paths += adjacent.len() as u32 - 1;
+            continue;
         }
         while n_paths >= next {
             let w = adjacent[adjacent.len() + next as usize - n_paths as usize - 1];
@@ -54,7 +54,7 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
                     },
                 );
             }
-            next = next_sample(1. / f64::from(m), missing_edges.len() as u32);
+            next = next_sample(1. / f64::from(m), next);
         }
         while next >= m_big {
             m_big *= 2;

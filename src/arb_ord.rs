@@ -35,7 +35,7 @@ pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -
             missing_edges.insert(Edge::new(a, v), Rc::clone(&count));
             missing_edges.insert(Edge::new(b, v), Rc::clone(&count));
             samples.push(Sample { a, b, v, count });
-            next = next_sample(1. / f64::from(m), samples.len() as u32);
+            next = next_sample(1. / f64::from(m), next);
         }
 
         if n_edges == m_big {

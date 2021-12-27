@@ -16,7 +16,7 @@ fn main() {
         (a.trim().parse().unwrap(), b.trim().parse().unwrap())
     });
 
-    println!("{}", arb_ord(10000, n, edges));
+    println!("{:.0}", arb_ord(1_000_000, n, edges));
 
     // To create the incidence list use:
     // ```bash
@@ -34,5 +34,5 @@ fn main() {
         (a.trim().parse().unwrap(), b.trim().parse().unwrap())
     });
 
-    println!("{}", incidence(10000, edges));
+    println!("{:.0}", incidence(1_000_000, edges));
 }
