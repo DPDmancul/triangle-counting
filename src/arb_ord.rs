@@ -8,7 +8,7 @@ struct Sample {
     a: u32,
     b: u32,
     v: u32,
-    count: Rc<Cell<u32>>,
+    count: Rc<Cell<u8>>,
 }
 
 pub fn arb_ord<I: Iterator<Item = (u32, u32)>>(r: u32, n_nodes: u32, edges: I) -> f64 {

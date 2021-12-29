@@ -28,10 +28,10 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             }
             adjacent.push(b);
 
-            if let Some(Missing { index, counts }) = missing_edges.get(&Edge::new(a, b)) {
-                let mut tmp = counts.get();
-                tmp[usize::from(*index)] += 1;
-                counts.set(tmp);
+            if let Some(Missing { index, .. }) = missing_edges.get_mut(&Edge::new(a, b)) {
+                if *index < 2 {
+                    *index += 1;
+                }
             }
 
             n_paths += adjacent.len() as u32 - 1;
@@ -40,16 +40,16 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             let w = adjacent[adjacent.len() + next as usize - n_paths as usize - 2];
             let edge = Edge::new(w, b);
 
-            if let Some(Missing { index, .. }) = missing_edges.get_mut(&edge) {
-                if *index < 2 {
-                    *index += 1;
-                }
+            if let Some(Missing { index, counts }) = missing_edges.get(&edge) {
+                let mut tmp = counts.get();
+                tmp[usize::from(*index)] += 1;
+                counts.set(tmp);
             } else {
                 missing_edges.insert(
                     edge,
                     Missing {
                         index: 0,
-                        counts: Rc::from(Cell::from([0, 0, 0])),
+                        counts: Rc::from(Cell::from([1, 0, 0])),
                     },
                 );
             }
@@ -58,28 +58,35 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
         while next >= m_big {
             m_big *= 2;
             m *= 2;
-            // TODO is it correct to retain in this way?
             missing_edges.retain(|_, Missing { counts, .. }| {
                 let mut delete = false;
                 let c @ [c1, c2, c3] = counts.get().map(|c| {
-                    if rng.gen() {
-                        c
-                    } else {
-                        delete = true;
-                        0
+                    let mut deleted = 0;
+                    for _ in 0..c {
+                        if rng.gen() {
+                            deleted += 1;
+                            delete = true;
+                        }
                     }
+                    c - deleted
                 });
                 counts.set(c);
-                !(delete && c1 == 0 && c2 == 0 && c3 == 0)
+                !(/*delete &&*/c1 == 0 && c2 == 0 && c3 == 0)
             });
         }
     }
 
     let beta = missing_edges
         .iter()
-        .fold(0, |acc, (_, Missing { counts, .. })| {
+        .fold(0, |mut acc, (_, Missing { index, counts })| {
             let [c1, c2, _] = counts.get();
-            acc + 2 * c1 + c2
+            if *index > 0 {
+                acc += 2 * c1;
+            }
+            if *index == 2 {
+                acc += c2;
+            }
+            acc
         });
     f64::from(n_paths) / 3. * f64::from(beta) / missing_edges.len() as f64
 }
