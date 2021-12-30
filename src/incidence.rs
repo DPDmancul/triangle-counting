@@ -60,9 +60,10 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             missing_edges.retain(|_, Missing { counts, .. }| {
                 let c @ [c1, c2, c3] = counts.get().map(|c| {
                     // c counts the samples
-                    // remove each sample with probability 0.5
-                    let bin = Binomial::new(u64::from(c), 0.5).unwrap();
-                    c - bin.sample(&mut thread_rng()) as u32
+                    // retain each sample with probability 0.5
+                    Binomial::new(u64::from(c), 0.5)
+                        .unwrap()
+                        .sample(&mut thread_rng()) as u32
                 });
                 counts.set(c);
                 !(c1 == 0 && c2 == 0 && c3 == 0)
