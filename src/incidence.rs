@@ -1,5 +1,6 @@
 use crate::utils::{hash_table, next_sample, Edge};
-use rand::{thread_rng, Rng};
+use rand::thread_rng;
+use rand_distr::{Binomial, Distribution};
 use std::{cell::Cell, rc::Rc};
 
 /// Data of a missing edge
@@ -17,8 +18,6 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
 
     let mut missing_edges = hash_table(r);
     let mut adjacent = Vec::new();
-
-    let mut rng = thread_rng(); // Random generator
 
     for (a, b) in edges {
         if n_paths < next {
@@ -59,19 +58,12 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             m_big *= 2;
             m *= 2;
             missing_edges.retain(|_, Missing { counts, .. }| {
-                let mut delete = false;
                 let c @ [c1, c2, c3] = counts.get().map(|c| {
-                    let mut deleted = 0;
-                    for _ in 0..c {
-                        if rng.gen() {
-                            deleted += 1;
-                            delete = true;
-                        }
-                    }
-                    c - deleted
+                    let bin = Binomial::new(u64::from(c), 0.5).unwrap();
+                    c - bin.sample(&mut thread_rng()) as u32
                 });
                 counts.set(c);
-                !(/*delete &&*/c1 == 0 && c2 == 0 && c3 == 0)
+                !(c1 == 0 && c2 == 0 && c3 == 0)
             });
         }
     }
