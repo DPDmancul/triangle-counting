@@ -36,7 +36,7 @@ pub fn incidence<I: Iterator<Item = (u32, u32)>>(r: u32, edges: I) -> f64 {
             n_paths += adjacent.len() as u32 - 1;
         }
         while n_paths >= next {
-            let w = adjacent[adjacent.len() + next as usize - n_paths as usize - 2];
+            let w = adjacent[adjacent.len() + next as usize - n_paths as usize - 1];
             let edge = Edge::new(w, b);
 
             if let Some(Missing { index, counts }) = missing_edges.get(&edge) {

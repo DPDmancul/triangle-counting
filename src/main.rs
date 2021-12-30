@@ -23,13 +23,10 @@ fn main() {
 
     // To create the incidence list use:
     // ```bash
-    //  FILE=itdk0304; cat <(head $FILE --lines=1) <(cat <(tail $FILE --lines=+2) <(tail $FILE --lines=+2 | sed 's/\(.*\)\t\(.*\)/\2\t\1/') | sort -n) > $FILE.incidence
+    //  FILE=itdk0304; cat <(cat <(tail $FILE --lines=+2) <(tail $FILE --lines=+2 | sed 's/\(.*\)\t\(.*\)/\2\t\1/') | sort -n) > $FILE.incidence
     // ```
 
-    let mut reader = BufReader::new(File::open("../datasets/itdk0304.incidence").unwrap());
-
-    let mut n = String::from("0");
-    reader.read_line(&mut n).unwrap();
+    let reader = BufReader::new(File::open("../datasets/itdk0304.incidence").unwrap());
 
     let lines = reader.lines().map(|l| l.unwrap());
     let edges = lines.map(|l| {
