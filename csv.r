@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 df <- data.frame(read.csv("1_000_000.csv"))
-colnames(df) <- c("arb_ord", "incidence")
+colnames(df) <- c("arb_ord", "time", "incidence", "time")
 
 print(nrow(df))
 print(summary(df))

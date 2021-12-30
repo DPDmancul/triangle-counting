@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::time::Instant;
 use triangle_counting::arb_ord::arb_ord;
 use triangle_counting::incidence::incidence;
 
@@ -16,7 +17,9 @@ fn main() {
         (a.trim().parse().unwrap(), b.trim().parse().unwrap())
     });
 
-    println!("{:.0}", arb_ord(1_000_000, n, edges));
+    let now = Instant::now();
+    let res = arb_ord(1_000_000, n, edges);
+    println!("{:.0}, {:}", res, now.elapsed().as_millis());
 
     // To create the incidence list use:
     // ```bash
@@ -34,5 +37,7 @@ fn main() {
         (a.trim().parse().unwrap(), b.trim().parse().unwrap())
     });
 
-    println!("{:.0}", incidence(1_000_000, edges));
+    let now = Instant::now();
+    let res = incidence(1_000_000, edges);
+    println!("{:.0}, {:}", res, now.elapsed().as_millis());
 }
