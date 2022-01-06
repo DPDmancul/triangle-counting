@@ -23,7 +23,7 @@ fn main() {
 
     // To create the incidence list use:
     // ```bash
-    //  FILE=itdk0304; cat <(tail $FILE --lines=+2) <(tail $FILE --lines=+2 | sed 's/\(.*\)\t\(.*\)/\2\t\1/') | sort -n > $FILE.incidence
+    //  FILE=itdk0304; cat <(tail $FILE --lines=+2) <(tail $FILE --lines=+2 | awk -F'\t' '{OFS=FS; print $2, $1}') | sort -n > $FILE.incidence
     // ```
 
     let reader = BufReader::new(File::open("../datasets/itdk0304.incidence").unwrap());
