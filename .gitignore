@@ -1,3 +1,5 @@
 /target
+tr_count_incidence
+*.o
 *.csv
 *.pdf

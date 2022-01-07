@@ -4,26 +4,40 @@ Implementation of Buriol, Luciana S., et al. "Counting triangles in data streams
 
 ## Building
 
+To build and run the complete version:
+
 ```bash
-cargo build --release
+make build
+make run
+```
+
+### Alternate version
+
+To build and run the alternate version of the incidence stream algorithm:
+
+```bash
+make alt=1 build
+make alt=1 run num_samples=<num_samples> filename=<fileName>
 ```
 
 ##  Test
 
+Tu run in debug mode:
+
 ```bash
-cargo run
+make debug
 ```
 
 ### Analyze results
 
-To start collecting results run:
+To start collecting results in `<filename>.csv` run:
 
 ```bash
-./csv.sh
+make <filename>.csv
 ```
 
 To analyze the collected results:
 
 ```bahs
-./csv.r
+make analyze
 ```

@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
 
-df <- data.frame(read.csv("1_000_000.csv"))
+df <- data.frame(read.csv(args[1]))
 colnames(df) <- c("arb_ord", "time", "incidence", "time")
 
 print(nrow(df))
