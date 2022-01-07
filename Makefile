@@ -32,8 +32,6 @@ endif
 analyze:
 	for f in *.csv; do echo "$$f"; ./csv.r "$$f"; done
 
-%.o: %.o
-
 clean:
 	rm -rf target
 	rm -f tr_count_incidence
