@@ -1,3 +1,5 @@
+// (c) 2021 Victor Isachi
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -28,7 +30,7 @@ void empty_adj_list(adjacency_list_t *list){
 	while(current != NULL){
 		pred = current->prev_node;
 		free(current);
-		current = pred;	
+		current = pred;
 	}
 	list->size = 0;
 	list->head = NULL;
@@ -56,7 +58,7 @@ void print_adj_list(adjacency_list_t *list){
 	if(list->size < 1) printf("Empty list\n");
 	else{
 		while(current != NULL){
-			printf("Node of index %u is at address: %p; contains vertex (%u) and points to nodes at addresses: %p and %p\n", 
+			printf("Node of index %u is at address: %p; contains vertex (%u) and points to nodes at addresses: %p and %p\n",
 				index++, (void*)current, current->vertex, (void*)current->prev_node, (void*)current->next_node);
 			current = current->next_node;
 		}
@@ -84,8 +86,8 @@ void print_hash_table(hash_table_t *hash_table){
 		else{
 			nugget_t* current = hash_table->bucket_list[bucket_index].head;
 			do{
-				printf("Bucket %u of the hash table contains [e: (%u,%u), c: %u, c1: %u, c2: %u] at address: %p\n", 
-					bucket_index, current->vertex1, current->vertex2, 
+				printf("Bucket %u of the hash table contains [e: (%u,%u), c: %u, c1: %u, c2: %u] at address: %p\n",
+					bucket_index, current->vertex1, current->vertex2,
 					current->c, current->c1, current->c2, (void*)current);
 				current = current->next;
 			}while(current != NULL);
@@ -148,7 +150,7 @@ void insert_into_hash(hash_table_t *hash_table, const unsigned int vertex1, cons
 		nugget_t *new_nugget = (nugget_t*)malloc(sizeof(nugget_t));
 		new_nugget->vertex1 = vertex1, new_nugget->vertex2 = vertex2, new_nugget->c = 1, new_nugget->c1 = 0, new_nugget->c2 = 0, new_nugget->next = NULL;
 		head->next = new_nugget;
-	}	
+	}
 }
 
 //nextSample() in the paper
@@ -182,17 +184,17 @@ unsigned int clean_half_sample_set(hash_table_t *hash_table, unsigned int sample
 					current->c2--;
 					sample_size--;
 				}
-			
+
 			if(current->c == 0 && current->c1 == 0 && current->c2 == 0){
 				nugget_t *temp = current;
 				if(pred != NULL){
 					pred->next = current->next;
 					current = pred->next;
-				} 
+				}
 				else{
 					hash_table->bucket_list[bucket_index].head = current->next;
 					current = hash_table->bucket_list[bucket_index].head;
-				} 
+				}
 				free(temp);
 			}
 			else{
@@ -221,7 +223,7 @@ unsigned int calculate_triangles(hash_table_t *hash_table){
 //the OptimizedOnePassSampling-Incidence(r) algorithm from the paper
 unsigned int count_triangles(const unsigned int num_samples, const char* stream_name)
 {
-	//initialization just like in the paper 
+	//initialization just like in the paper
 	unsigned int sample_size = 0;
 	unsigned long num_2paths_seen = 0;
 	unsigned long next_sample_index = 1;
@@ -268,7 +270,7 @@ unsigned int count_triangles(const unsigned int num_samples, const char* stream_
 
 			check_triangles(&hash_table, end_vertex1, end_vertex2);
 
-			num_2paths_seen += (adj_list.size - 1); 
+			num_2paths_seen += (adj_list.size - 1);
 
 			if(num_2paths_seen < next_sample_index && EOF == fscanf(input_stream, "%u 	%u", &end_vertex1_read, &end_vertex2_read)) stream_ended = true;
 		}
